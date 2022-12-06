@@ -7,7 +7,6 @@ File will apply least square method to curve fit
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 #Determinant
 def det(Array):
@@ -20,6 +19,7 @@ class curve_fit:
         self.Xdata = Xdata
         self.Ydata = Ydata
 
+    # transforms the Ydata to a linear projection
     def log_data(self, exponential: bool, linear: bool, power: bool):
         # will take the log of the data
         if exponential == True and linear == False and power == False:
@@ -31,7 +31,8 @@ class curve_fit:
         else:
             print('Only one of the 3 bools should be TRUE.')
 
-    # X, Y = log_data(...)
+    # X, Y = log_data()
+    # will calculate (a, b) to get the parameters to fit each curve
     def systemsolver(self, X: np.ndarray, Y: np.ndarray):
         array = np.zeros((2, 2))
         array[0, 0] = np.sum(X**2)
@@ -44,7 +45,6 @@ class curve_fit:
         vec[1] = np.sum(Y)
 
         # Must determine the inverse of array
-        print('determinant is {}'.format(det(array)))
         if det(array) == 0:
             print('Matrix is not invertible and the equation cannot be solved')
             return
@@ -54,33 +54,55 @@ class curve_fit:
             arrayinv[0, 1] = (-1/det(array))*array[0, 1]
             arrayinv[1, 0] = (-1/det(array))*array[1, 0]
             arrayinv[1, 1] = (1/det(array))*array[0, 0]
-            #print('Inverse of array', arrayinv)
 
         a = arrayinv[0, 0]*vec[0] + arrayinv[0, 1]*vec[1]
         b = arrayinv[1, 0]*vec[0] + arrayinv[1, 1]*vec[1]
 
         return a, b
 
+    # uses (a, b) from systemsolver() to output numpy array of the modelled linear data
+    # linear curve fit
     def curve_fit_linear(self, a: float, b: float):
         return a*self.Xdata + b
 
+    # uses (a, b) from systemsolver() to output numpy array of the modelled exponential data
+    # exponential curve fit
     def curve_fit_exp(self, a: float, b: float):
         c = np.exp(b)
         return c*np.exp(a*self.Xdata)
 
+    # uses (a, b) from systemsolver() to output numpy array of the modelled power (mononomial) data
+    # power curve fit
     def curve_fit_power(self, a: float, b: float):
         c = np.exp(b)
         return c*(self.Xdata)**a
 
-class curve_fit_limited:
-    def __init__(self, Xdata: np.ndarray, Ydata: np.ndarray) -> None:
+class curve_fit_guess_limit:
+    def __init__(self, Xdata: np.ndarray, Ydata: np.ndarray, limit: float) -> None:
         self.Xdata = Xdata
         self.Ydata = Ydata
+        self.limit = limit
 
-    def transformation_Guess_limit(self):
-        pass
+    # transforms the Ydata to a linear projection
+    def transformation_guess_limit(self, limited_exponential: bool, logistic: bool) -> np.ndarray:
+        if limited_exponential == True and logistic == False:
+            return np.log((self.limit - self.Ydata)/(self.limit - self.Ydata[0]))
+        elif limited_exponential == False and logistic == True:
+            return np.log((self.limit/self.Ydata - 1)/(self.limit/self.Ydata[0] - 1))
+        else:
+            print('Only one of the 2 bools should be TRUE.')
 
-    def systemsolver_Guess_limit(self, X: np.ndarray, Y: np.ndarray):
-        pass
+    # Will calculate -k (inverse logistic growth rate) values from the system defined in systemsolver() where b=0 and a = -k 
+    def systemsolver_guess_limit(self, Y: np.ndarray) -> tuple:
+        return np.sum(self.Xdata * Y)/np.sum(self.Xdata**2), np.sum(Y)/np.sum(self.Xdata)
 
-    
+    # uses (a) from systemsolver_guess_limit() to output numpy array of the modelled logistic data
+    # logistic curve fit
+    def curve_fit_logistic(self, a: float) -> np.ndarray:
+        return self.limit/(1 + (self.limit/self.Ydata[0] - 1)*np.exp(a*self.Xdata))
+
+    # uses (a) from systemsolver_guess_limit() to output numpy array of the modelled limited exponential data
+    # limited exponential curve fit
+    def curve_fit_limited_exp(self, a: float) -> np.ndarray:
+        return self.limit + (self.Ydata[0] - self.limit)*np.exp(a*self.Xdata)
+
