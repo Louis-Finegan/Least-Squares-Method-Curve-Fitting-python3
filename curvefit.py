@@ -20,7 +20,7 @@ class curve_fit:
         self.Ydata = Ydata
 
     # transforms the Ydata to a linear projection
-    def log_data(self, exponential: bool, linear: bool, power: bool):
+    def log_data(self, exponential: bool, linear: bool, power: bool) -> np.ndarray:
         # will take the log of the data
         if exponential == True and linear == False and power == False:
             return self.Xdata, np.log(self.Ydata)
@@ -33,7 +33,7 @@ class curve_fit:
 
     # X, Y = log_data()
     # will calculate (a, b) to get the parameters to fit each curve
-    def systemsolver(self, X: np.ndarray, Y: np.ndarray):
+    def systemsolver(self, X: np.ndarray, Y: np.ndarray) -> tuple:
         array = np.zeros((2, 2))
         array[0, 0] = np.sum(X**2)
         array[0, 1] = np.sum(X)
@@ -62,18 +62,18 @@ class curve_fit:
 
     # uses (a, b) from systemsolver() to output numpy array of the modelled linear data
     # linear curve fit
-    def curve_fit_linear(self, a: float, b: float):
+    def curve_fit_linear(self, a: float, b: float) -> np.ndarray:
         return a*self.Xdata + b
 
     # uses (a, b) from systemsolver() to output numpy array of the modelled exponential data
     # exponential curve fit
-    def curve_fit_exp(self, a: float, b: float):
+    def curve_fit_exp(self, a: float, b: float) -> np.ndarray:
         c = np.exp(b)
         return c*np.exp(a*self.Xdata)
 
     # uses (a, b) from systemsolver() to output numpy array of the modelled power (mononomial) data
     # power curve fit
-    def curve_fit_power(self, a: float, b: float):
+    def curve_fit_power(self, a: float, b: float) -> np.ndarray:
         c = np.exp(b)
         return c*(self.Xdata)**a
 
@@ -106,3 +106,54 @@ class curve_fit_guess_limit:
     def curve_fit_limited_exp(self, a: float) -> np.ndarray:
         return self.limit + (self.Ydata[0] - self.limit)*np.exp(a*self.Xdata)
 
+class curve_fit_limit:
+
+    def __init__(self, Ydata: np.ndarray, min_val: float, max_val: float, sep: float) -> None:
+        self.min_val = min_val
+        self.max_val = max_val
+        self.sep = sep
+        self.Xdata = np.arange(min_val, max_val, sep)
+        self.Ydata = Ydata
+
+
+    # will return -> (X, Y)
+    def transformation(self, limited_exponential: bool, logistic: bool) -> np.ndarray:
+        if limited_exponential == True and logistic == False:
+            return np.delete(self.Ydata, len(self.Ydata)-1), np.delete(self.Ydata, 0)
+        elif limited_exponential == False and logistic == False:
+            pass
+        else:
+            print('Only one of the 2 bools should be TRUE.')
+
+    def systemsolver_limited(self, X: np.ndarray, Y: np.ndarray) -> tuple:
+        array = np.zeros((2, 2))
+        array[0, 0] = np.sum(X**2)
+        array[0, 1] = np.sum(X)
+        array[1, 0] = np.sum(X)
+        array[1, 1] = len(X)
+
+        vec = np.zeros(2)
+        vec[0] = np.sum(X.dot(Y))
+        vec[1] = np.sum(Y)
+
+        # Must determine the inverse of array
+        if det(array) == 0:
+            print('Matrix is not invertible and the equation cannot be solved')
+            return
+        else:
+            arrayinv = np.zeros((2, 2))
+            arrayinv[0, 0] = (1/det(array))*array[1, 1]
+            arrayinv[0, 1] = (-1/det(array))*array[0, 1]
+            arrayinv[1, 0] = (-1/det(array))*array[1, 0]
+            arrayinv[1, 1] = (1/det(array))*array[0, 0]
+
+        a = arrayinv[0, 0]*vec[0] + arrayinv[0, 1]*vec[1]
+        b = arrayinv[1, 0]*vec[0] + arrayinv[1, 1]*vec[1]
+
+        return a, b
+
+    def curve_fit_logistic(self) -> np.ndarray:
+        pass
+
+    def curve_fit_limited_exp(self) -> np.ndarray:
+        pass
