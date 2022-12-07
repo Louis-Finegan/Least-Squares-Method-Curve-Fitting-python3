@@ -4,6 +4,8 @@ File will apply least square method to curve fit
 1. linear
 2. exponential
 3. power
+4. limited exponential
+5. logistic
 """
 
 import numpy as np
