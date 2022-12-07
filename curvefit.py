@@ -92,19 +92,20 @@ class curve_fit_guess_limit:
         else:
             print('Only one of the 2 bools should be TRUE.')
 
-    # Will calculate -k (inverse logistic growth rate) values from the system defined in systemsolver() where b=0 and a = -k 
+    # Will calculate -k (inverse logistic/exponential growth rate) values from the system defined 
+    # in systemsolver() where b=0 and a = -k 
     def systemsolver_guess_limit(self, Y: np.ndarray) -> tuple:
         return np.sum(self.Xdata * Y)/np.sum(self.Xdata**2), np.sum(Y)/np.sum(self.Xdata)
 
-    # uses (a) from systemsolver_guess_limit() to output numpy array of the modelled logistic data
+    # uses k = -a from systemsolver_guess_limit() to output numpy array of the modelled logistic data
     # logistic curve fit
-    def curve_fit_logistic(self, a: float) -> np.ndarray:
-        return self.limit/(1 + (self.limit/self.Ydata[0] - 1)*np.exp(a*self.Xdata))
+    def curve_fit_logistic(self, k: float) -> np.ndarray:
+        return self.limit/(1 + (self.limit/self.Ydata[0] - 1)*np.exp(-k*self.Xdata))
 
-    # uses (a) from systemsolver_guess_limit() to output numpy array of the modelled limited exponential data
+    # uses k = -a from systemsolver_guess_limit() to output numpy array of the modelled limited exponential data
     # limited exponential curve fit
-    def curve_fit_limited_exp(self, a: float) -> np.ndarray:
-        return self.limit + (self.Ydata[0] - self.limit)*np.exp(a*self.Xdata)
+    def curve_fit_limited_exp(self, k: float) -> np.ndarray:
+        return self.limit + (self.Ydata[0] - self.limit)*np.exp(-k*self.Xdata)
 
 class curve_fit_limit:
 
@@ -125,6 +126,8 @@ class curve_fit_limit:
         else:
             print('Only one of the 2 bools should be TRUE.')
 
+    # Will calculate k (inverse logistic/exponential growth rate) and limit values from the system defined 
+    # in systemsolver() where limit=(1-a)/b and a = -ln(a)/sep
     def systemsolver_limited(self, X: np.ndarray, Y: np.ndarray) -> tuple:
         array = np.zeros((2, 2))
         array[0, 0] = np.sum(X**2)
@@ -150,10 +153,16 @@ class curve_fit_limit:
         a = arrayinv[0, 0]*vec[0] + arrayinv[0, 1]*vec[1]
         b = arrayinv[1, 0]*vec[0] + arrayinv[1, 1]*vec[1]
 
-        return a, b
+        k = -np.log(a)/self.sep
+        limit = (1- a)/b
+        return k, limit
 
-    def curve_fit_logistic(self) -> np.ndarray:
-        pass
+    # uses k and limit from systemsolver_limit() to output numpy array of the modelled logistic data
+    # logistic curve fit
+    def curve_fit_logistic(self, limit: float, k: float) -> np.ndarray:
+        return limit/(1 + (limit/self.Ydata[0] - 1)*np.exp(-k*self.Xdata))
 
-    def curve_fit_limited_exp(self) -> np.ndarray:
-        pass
+    # uses k and limit from systemsolver_limit() to output numpy array of the modelled limited exponential data
+    # limited exponential curve fit
+    def curve_fit_limited_exp(self, limit: float, k: float) -> np.ndarray:
+        return limit + (self.Ydata[0] - limit)*np.exp(-k*self.Xdata)
