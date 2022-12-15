@@ -21,8 +21,8 @@ class curve_fit:
         self.Xdata = Xdata
         self.Ydata = Ydata
 
-    # transforms the Ydata to a linear projection
-    def log_data(self, exponential: bool, linear: bool, power: bool) -> np.ndarray:
+    # Linearization
+    def linearization(self, exponential: bool, linear: bool, power: bool) -> np.ndarray:
         # will take the log of the data
         if exponential == True and linear == False and power == False:
             return self.Xdata, np.log(self.Ydata)
@@ -86,7 +86,7 @@ class curve_fit_guess_limit:
         self.limit = limit
 
     # transforms the Ydata to a linear projection
-    def transformation_guess_limit(self, limited_exponential: bool, logistic: bool) -> np.ndarray:
+    def linearization(self, limited_exponential: bool, logistic: bool) -> np.ndarray:
         if limited_exponential == True and logistic == False:
             return np.log((self.limit - self.Ydata)/(self.limit - self.Ydata[0]))
         elif limited_exponential == False and logistic == True:
@@ -120,7 +120,7 @@ class curve_fit_limit:
 
 
     # will return -> (X, Y)
-    def transformation(self, limited_exponential: bool, logistic: bool) -> np.ndarray:
+    def linearization(self, limited_exponential: bool, logistic: bool) -> np.ndarray:
         if limited_exponential == True and logistic == False:
             return np.delete(self.Ydata, len(self.Ydata)-1), np.delete(self.Ydata, 0)
         elif limited_exponential == False and logistic == False:
