@@ -1,6 +1,6 @@
 # Curve-Fitting
 
-Package for curve fitting data using Numpy. Uses the least square method.
+Curve fitting data using Numpy. Uses the least square method.
 ## Overview
 
 ### Curve fit types:
