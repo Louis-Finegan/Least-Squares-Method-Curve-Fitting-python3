@@ -1,0 +1,11 @@
+.gitignore
+README.md
+requirements.txt
+setup.py
+least_squares/__init__.py
+least_squares/curvefit.py
+least_squares.egg-info/PKG-INFO
+least_squares.egg-info/SOURCES.txt
+least_squares.egg-info/dependency_links.txt
+least_squares.egg-info/requires.txt
+least_squares.egg-info/top_level.txt

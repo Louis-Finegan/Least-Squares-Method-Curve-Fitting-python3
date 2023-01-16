@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: least-squares
+Version: 1.0
+Summary: Curvefitting different models over data using the method of least squares (From Scratch with numpy)
+Home-page: UNKNOWN
+Author: Louis Finegan
+Author-email: louis02finegan@gmail.com
+License: UNKNOWN
+Keywords: python,least-squares,curve-fitting,linear fit,exponential fit,power fit,limited exponential fit,logistic curve fit
+Platform: UNKNOWN
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+
+UNKNOWN
+
