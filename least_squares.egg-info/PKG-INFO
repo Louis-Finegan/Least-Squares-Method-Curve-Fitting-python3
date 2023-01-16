@@ -9,11 +9,27 @@ License: UNKNOWN
 Keywords: python,least-squares,curve-fitting,linear fit,exponential fit,power fit,limited exponential fit,logistic curve fit
 Platform: UNKNOWN
 Classifier: Development Status :: 1 - Planning
-Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: Unix
 Classifier: Operating System :: MacOS :: MacOS X
 Classifier: Operating System :: Microsoft :: Windows
+Description-Content-Type: text/markdown
+License-File: LICENCE
 
-UNKNOWN
+
+# Curve-Fitting
+
+Curve fitting data using Numpy. Uses the least square method.
+## Overview
+
+### Curve fit types:
+1. Linear fit.
+2. Exponential fit.
+3. Power fit.
+
+### Curve fit types with limits:
+4. Limited-Exponential fit.
+5. Logistic fit.
+
 
