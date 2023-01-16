@@ -32,5 +32,6 @@ setup(
         "Operating System :: Unix",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
-        ]           
+        ],
+    long_description=long_description,
 )
