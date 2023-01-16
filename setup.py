@@ -1,7 +1,11 @@
 from setuptools import setup
+import codecs
+import os
 
-with open("README", 'r') as f:
-    long_description = f.read()
+here = os.path.abspath(os.path.dirname(__file__))
+
+with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
+    long_description = "\n" + fh.read()
 
 setup(
    name='least-squares',
@@ -10,5 +14,23 @@ setup(
    author='Louis Finegan',
    author_email='louis02finegan@gmail.com',
    packages=['least-squares'],
-   install_requires=['numpy'], #external packages as dependencies
+   install_requires=['numpy'],
+   keywords=[
+        'python', 
+        'least-squares', 
+        'curve-fitting', 
+        'linear fit', 
+        'exponential fit',
+        'power fit',
+        'limited exponential fit',
+        'logistic curve fit'
+        ],
+    classifiers=[
+        "Development Status :: 1 - Planning",
+        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3",
+        "Operating System :: Unix",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
+        ]           
 )
